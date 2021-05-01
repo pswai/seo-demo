@@ -1,3 +1,1 @@
-export default function Home() {
-  return <div>lala</div>;
-}
+export { default } from "@/components/IndexPage";

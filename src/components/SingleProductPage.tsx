@@ -4,6 +4,7 @@ import {
   AspectRatio,
   Box,
   Button,
+  Flex,
   Heading,
   Image,
   Stack,
@@ -30,7 +31,10 @@ const product = {
   name: "Grade AAA Apricots",
   description:
     "The highest grade apricots harvested carefully in the morning when it is still covered by mist.",
-  imageUrl: "photos/apricots-small.jpeg",
+  images: {
+    small: "photos/apricots-small.jpeg",
+    full: "photos/apricots.jpeg",
+  },
   seller: "SEO Fresh",
   variants: [
     {
@@ -58,6 +62,7 @@ const product = {
 const productJsonldProps: ProductJsonLdProps = {
   productName: product.name,
   description: product.description,
+  images: Object.values(product.images),
   brand: product.seller,
   offers: product.variants.map((variant) => ({
     price: variant.price.toFixed(2),
@@ -70,7 +75,7 @@ const productJsonldProps: ProductJsonLdProps = {
 };
 
 function SingleProductPage() {
-  const { name, description, variants, imageUrl } = product;
+  const { name, description, variants, images } = product;
 
   const allPrices = variants.map((variant) => variant.price);
   const minPrice = Math.min(...allPrices);
@@ -81,38 +86,48 @@ function SingleProductPage() {
       <NextSeo title={name} description={description} />
       <ProductJsonLd {...productJsonldProps} />
 
-      <AspectRatio ratio={4 / 3}>
-        <Image src={imageUrl} alt={name} />
-      </AspectRatio>
-
-      <Stack spacing={4} p={4}>
-        <Box>
-          <Heading as="h1" size="lg">
-            {name}
-          </Heading>
-          {toPrice("USD", minPrice)} - {toPrice("USD", maxPrice)}
+      <Flex
+        // columns={[1, null, 2]}
+        flexDirection={["column", null, "row"]}
+        maxWidth={[null, null, "960px"]}
+        mx={[null, null, "auto"]}
+      >
+        <Box flex={[null, null, 1]} p={[null, null, 4]}>
+          <AspectRatio ratio={4 / 3}>
+            <Image src={images.small} alt={name} />
+          </AspectRatio>
         </Box>
 
-        <Box>{description}</Box>
+        <Stack spacing={4} p={4} flex={[null, null, 2]}>
+          <Box>
+            <Heading as="h1" size="lg">
+              {name}
+            </Heading>
+            {toPrice("USD", minPrice)} - {toPrice("USD", maxPrice)}
+          </Box>
 
-        <Stack direction="row" spacing={4}>
-          {variants.map((variant) => (
-            <Button
-              type="button"
-              variant="outline"
-              disabled={variant.availability === Availability.OutOfStock}
-            >
-              {variant.name}
+          <Box>{description}</Box>
+
+          <Stack direction="row" spacing={4}>
+            {variants.map((variant) => (
+              <Button
+                key={variant.id}
+                type="button"
+                variant="outline"
+                disabled={variant.availability === Availability.OutOfStock}
+              >
+                {variant.name}
+              </Button>
+            ))}
+          </Stack>
+
+          <Box>
+            <Button type="button" isFullWidth>
+              Add To Cart
             </Button>
-          ))}
+          </Box>
         </Stack>
-
-        <Box>
-          <Button type="button" isFullWidth>
-            Add To Cart
-          </Button>
-        </Box>
-      </Stack>
+      </Flex>
     </>
   );
 }

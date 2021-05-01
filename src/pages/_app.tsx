@@ -4,7 +4,7 @@ import { DefaultSeo } from "next-seo";
 function MyApp({ Component, pageProps }) {
   return (
     <ChakraProvider>
-      <DefaultSeo titleTemplate="SEO Demo | %s" />
+      <DefaultSeo titleTemplate="%s | SEO Demo" />
 
       <Component {...pageProps} />
     </ChakraProvider>
